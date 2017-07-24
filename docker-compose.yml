@@ -1,0 +1,45 @@
+# php:5.3, mysql:5.5, phpmyadmin:4.7
+# constroi container com php mais apache, mysql e phpmyadmin configurado com senha 
+version: '2'
+services:
+  mysql:
+    image: mysql:5.5
+    container_name: mysql-5.5
+    restart: always
+    ports:
+      - '3306:3306'
+    volumes:
+      - ./data/db/mysql:/var/lib/mysql
+    environment:
+     - MYSQL_ROOT_PASSWORD=root     
+     - MYSQL_USER=root
+     - MYSQL_PASSWORD=root
+     - MYSQL_DATABASE=mydb
+  php:
+    image: php:5.3-apache
+    container_name: php-5.3-apache2
+    depends_on:
+    - mysql
+    links:
+    - mysql   
+    restart: always
+    ports:
+      - '80:80'
+    volumes:
+       - "./html:/var/www/html/"  
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin-5.3
+    depends_on:
+    - mysql
+    links:
+    - mysql   
+    restart: always
+    ports:
+    - '81:80'
+    environment:      
+      # - PMA_ARBITRARY=1 # pede servidor para se conectar, colocar ip que e gerado pelo docker toobox 
+      - PMA_HOST=mysql   
+ 
+
+
